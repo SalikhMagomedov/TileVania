@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         Run();
+        FlipSprite();
     }
 
     private void Run()
@@ -23,5 +24,15 @@ public class Player : MonoBehaviour
         var controlThrow = Input.GetAxis("Horizontal");
 
         rb.velocity = new Vector2(controlThrow * runSpeed, rb.velocity.y);
+    }
+
+    private void FlipSprite()
+    {
+        if (Mathf.Abs(rb.velocity.x) > Mathf.Epsilon)
+        {
+            transform.localScale = new Vector3(Mathf.Sign(rb.velocity.x),
+                                               transform.localScale.y,
+                                               transform.localScale.z);
+        }
     }
 }
