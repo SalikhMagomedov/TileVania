@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     private Rigidbody2D _rb;
     private Animator _animator;
     private Collider2D _collider2D;
+    private float _startingGravity;
     
     private static readonly int IsRunning = Animator.StringToHash("IsRunning");
     private static readonly int IsClimbing = Animator.StringToHash("IsClimbing");
@@ -18,6 +19,8 @@ public class Player : MonoBehaviour
         _collider2D = GetComponent<Collider2D>();
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
+
+        _startingGravity = _rb.gravityScale;
     }
 
     private void Update()
@@ -30,11 +33,18 @@ public class Player : MonoBehaviour
 
     private void Climb()
     {
-        if (!_collider2D.IsTouchingLayers(LayerMask.GetMask("Climbing"))) return;
+        if (!_collider2D.IsTouchingLayers(LayerMask.GetMask("Climbing")))
+        {
+            _animator.SetBool(IsClimbing, false);
+            _rb.gravityScale = _startingGravity;
+            return;
+        }
 
         var controlThrow = Input.GetAxis("Vertical");
         var climbVelocity = new Vector2(_rb.velocity.x, controlThrow * climbSpeed);
+        
         _rb.velocity = climbVelocity;
+        _rb.gravityScale = 0f;
         _animator.SetBool(IsClimbing, Mathf.Abs(controlThrow) > Mathf.Epsilon);
     }
 
