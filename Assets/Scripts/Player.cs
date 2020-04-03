@@ -7,11 +7,13 @@ public class Player : MonoBehaviour
 
     private Rigidbody2D _rb;
     private Animator _animator;
+    private Collider2D _collider2D;
     
     private static readonly int IsRunning = Animator.StringToHash("IsRunning");
 
     private void Awake()
     {
+        _collider2D = GetComponent<Collider2D>();
         _rb = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
     }
@@ -33,6 +35,8 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
+        if (!_collider2D.IsTouchingLayers(LayerMask.GetMask("Ground"))) return;
+            
         if (Input.GetButtonDown("Jump"))
         {
             var jumpVelocityToAdd = new Vector2(0f, jumpSpeed);
