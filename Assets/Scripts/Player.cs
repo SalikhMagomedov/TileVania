@@ -5,15 +5,18 @@ public class Player : MonoBehaviour
     [SerializeField] private float runSpeed = 5f;
     [SerializeField] private float jumpSpeed = 5f;
     [SerializeField] private float climbSpeed = 5f;
+    [SerializeField] private Vector2 deathKick = new Vector2(25f, 25f);
 
     private Rigidbody2D _rb;
     private Animator _animator;
     private CapsuleCollider2D _collider2D;
     private BoxCollider2D _feet;
     private float _startingGravity;
+    private bool _isAlive = true;
     
     private static readonly int IsRunning = Animator.StringToHash("IsRunning");
     private static readonly int IsClimbing = Animator.StringToHash("IsClimbing");
+    private static readonly int Dying = Animator.StringToHash("Dying");
 
     private void Awake()
     {
@@ -27,10 +30,23 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (!_isAlive) return;
+
         Run();
         Climb();
         Jump();
         FlipSprite();
+        Die();
+    }
+
+    private void Die()
+    {
+        if (_collider2D.IsTouchingLayers(LayerMask.GetMask("Enemy")))
+        {
+            _animator.SetTrigger(Dying);
+            _rb.velocity = deathKick;
+            _isAlive = false;
+        }
     }
 
     private void Climb()
