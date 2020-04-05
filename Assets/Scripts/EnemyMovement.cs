@@ -3,7 +3,7 @@
 public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 1f;
-    
+
     private Rigidbody2D _rb;
 
     private void Start() => _rb = GetComponent<Rigidbody2D>();
