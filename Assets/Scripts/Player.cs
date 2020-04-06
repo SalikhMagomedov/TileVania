@@ -17,9 +17,11 @@ public class Player : MonoBehaviour
     private static readonly int IsRunning = Animator.StringToHash("IsRunning");
     private static readonly int IsClimbing = Animator.StringToHash("IsClimbing");
     private static readonly int Dying = Animator.StringToHash("Dying");
+    private GameSession _gameSession;
 
     private void Awake()
     {
+        _gameSession = FindObjectOfType<GameSession>();
         _feet = GetComponent<BoxCollider2D>();
         _collider2D = GetComponent<CapsuleCollider2D>();
         _rb = GetComponent<Rigidbody2D>();
@@ -43,6 +45,7 @@ public class Player : MonoBehaviour
         _animator.SetTrigger(Dying);
         _rb.velocity = deathKick;
         _isAlive = false;
+        _gameSession.ProcessPlayerDeath();
     }
 
     private void Climb()
